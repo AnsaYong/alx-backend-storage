@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS average_scores (
 
 DELIMITER //
 
-CREATE PROCEDURE ComputeAverageScoreForUser(IN user_id INT)
+CREATE PROCEDURE IF NOT EXISTS ComputeAverageScoreForUser(IN user_id INT)
 BEGIN
     DECLARE avg_score DECIMAL(10,2);
 
