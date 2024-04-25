@@ -2,13 +2,14 @@
 -- if the second number is zero, it returns 0
 DELIMITER //
 
-CREATE FUNCTION SafeDiv(numerator INT, denominator INT) RETURNS INT
+CREATE FUNCTION SafeDiv(a INT, b INT)
+RETURNS INT
 BEGIN
-  IF denominator = 0 THEN
-    RETURN 0;
-  ELSE
-    RETURN numerator / denominator;
-  END IF;
+    IF b = 0 THEN
+        RETURN 0;
+    ELSE
+        RETURN a / b;
+    END IF;
 END;
 //
 
