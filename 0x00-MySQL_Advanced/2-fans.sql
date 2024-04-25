@@ -2,7 +2,7 @@
 -- column names are origin, nb_fans
 -- origin is the country of origin of the band
 -- nb_fans is the number of unique fans that the bands have in that country
-SELECT origin, SUM(fans) AS fans
+SELECT origin, SUM(fans) AS nb_fans
 FROM metal_bands
 GROUP BY origin
 ORDER BY SUM(fans) DESC;
