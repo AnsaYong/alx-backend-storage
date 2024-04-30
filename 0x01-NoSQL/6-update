@@ -1,0 +1,6 @@
+// adds a new attribute to documents with a specific name in the collection school
+db.school.updateMany(
+    { name: "Holberton school" },
+    { $set: { address: "972 Mission street" } }
+)
+
