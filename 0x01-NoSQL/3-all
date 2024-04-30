@@ -1,0 +1,3 @@
+// Lists all documents in the collection `school`
+// the database is passed as an argument
+db.school.find()
