@@ -113,6 +113,29 @@ class Cache:
             return value
         return wrapper
 
+    @staticmethod
+    def replay(method: Callable) -> None:
+        """
+        Replays the history of inputs/outputs of a method.
+
+        Parameters
+        ----------
+        method : Callable
+            The method to replay the history of inputs/outputs.
+        """
+
+        inputs_key = f"{method.__qualname__}:inputs"
+        outputs_key = f"{method.__qualname__}:outputs"
+        inputs = self._redis.lrange(inputs_key, 0, -1)
+        outputs = self._redis.lrange(outputs_key, 0, -1)
+        print(f"{method.__qualname__} was called {len(inputs)} times:")
+        for i, o in zip(inputs, outputs):
+            print(
+                f"{method.__qualname__}("
+                f"*{i.decode('utf-8').split(', ')}"
+                f") -> {o.decode('utf-8')}"
+            )
+
     @count_calls
     @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
