@@ -75,7 +75,46 @@ class Cache:
             return method(self, *args, **kwargs)
         return wrapper
 
+    def call_history(method: Callable) -> Callable:
+        """
+        Stores the history of inputs and outputs for a method.
+
+        Parameters
+        ----------
+        method : Callable
+            The method to store the history of inputs and outputs.
+
+        Returns
+        -------
+        wrapper : Callable
+            The wrapper function that stores the history of inputs and outputs.
+        """
+
+        @wraps(method)
+        def wrapper(self, *args, **kwargs):
+            """
+            The wrapper function that stores the history of inputs and outputs.
+
+            Parameters
+            ----------
+            self : Cache
+                The Cache object.
+
+            Returns
+            -------
+            method : Callable
+                The method to store the history of inputs and outputs.
+            """
+
+            key = method.__qualname__
+            self._redis.rpush(f"{key}:inputs", str(args))
+            value = method(self, *args, **kwargs)
+            self._redis.rpush(f"{key}:outputs", str(value))
+            return value
+        return wrapper
+
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Stores an instance of a Redit client in the cache.
