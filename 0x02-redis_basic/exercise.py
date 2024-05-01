@@ -6,6 +6,7 @@ store an instance of a Redis client.
 import redis
 import uuid
 from typing import Union, Callable
+from functools import wraps
 
 
 class Cache:
@@ -38,6 +39,43 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    def count_calls(method: Callable) -> Callable:
+        """
+        Counts the number of times a method is called.
+
+        Parameters
+        ----------
+        method : Callable
+            The method to count the number of calls.
+
+        Returns
+        -------
+        wrapper : Callable
+            The wrapper function that counts the number of calls.
+        """
+
+        @wraps(method)
+        def wrapper(self, *args, **kwargs):
+            """
+            The wrapper function that counts the number of calls.
+
+            Parameters
+            ----------
+            self : Cache
+                The Cache object.
+
+            Returns
+            -------
+            method : Callable
+                The method to count the number of calls.
+            """
+
+            key = method.__qualname__
+            self._redis.incr(key)
+            return method(self, *args, **kwargs)
+        return wrapper
+
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Stores an instance of a Redit client in the cache.
